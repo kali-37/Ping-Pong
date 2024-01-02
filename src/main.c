@@ -1,8 +1,4 @@
-#if program 
-cd ../build/
-make  >/dev/null
-./program
-#endif
+#include <SDL2/SDL_render.h>
 #include <unistd.h>
 #include <stdint.h>
 #include<time.h>
@@ -18,47 +14,43 @@ static Uint32 window_Height =1000;
 static Uint32 window_Width= 1000;
 // static Uint32 cord_x;
 // static Uint32 cord_y;
+static Uint32 _lasttick;
 
+#define FPS 60
+SDL_Renderer *_render ;
+void renderer(SDL_Window *win);
 SDL_FRect  _playable;
+
+
 
 void update_playable(){
 _playable.h=(float)window_Height/30;
 _playable.w=(float)window_Width /10;
 _playable.x=(float)window_Height/30;
 _playable.y=(float)window_Width/10;
-
-
-printf("Playable x , playable y %f %f",_playable.h,_playable.w);
 }
 
 
-
-static Uint32 _lasttick;
-
-#define FPS 60
-SDL_Renderer *_render ;
-//prototype
-void renderer(SDL_Window *win);
     
 void _eventcheck(){
-    SDL_DisplayMode dm;
-        if (SDL_GetDesktopDisplayMode(0, &dm) != 0) {
-    SDL_Log("SDL_GetDesktopDisplayMode failed: %s", SDL_GetError());
-    exit(0);
-}
-printf("MAX DWM %d\n",dm.h);
-        printf("WINDOW HEIGHT %u \n", window_Height);
-        if (window_Height>dm.h*0.8 && window_Width>dm.w*0.8){
-            window_Height=dm.h*0.8;
-            window_Width=dm.w*0.8;
-        }
-       update_playable();
-       SDL_SetRenderDrawColor(_render, 0,0,0,255) ;
-       SDL_RenderDrawRectF(_render,&_playable);
-       SDL_SetRenderDrawColor(_render, 0,255,0,255) ;
-       SDL_RenderFillRectF(_render,&_playable);
-       SDL_RenderClear(_render); 
-       SDL_RenderPresent(_render);
+     SDL_DisplayMode dm;
+         if (SDL_GetDesktopDisplayMode(0, &dm) != 0) {
+     SDL_Log("SDL_GetDesktopDisplayMode failed: %s", SDL_GetError());
+     exit(0);
+ }
+ printf("MAX DWM %d\n",dm.h);
+         printf("WINDOW HEIGHT %u \n", window_Height);
+         if (window_Height>dm.h*0.8 && window_Width>dm.w*0.8){
+             window_Height=dm.h*0.8;
+             window_Width=dm.w*0.8;
+         }  
+        update_playable();
+        SDL_SetRenderDrawColor(_render, 250,0,0,255) ;
+        SDL_RenderDrawRectF(_render,&_playable);
+        SDL_RenderClear(_render);
+        SDL_SetRenderDrawColor(_render, 0,255,0,255) ;
+        SDL_RenderFillRectF(_render,&_playable);
+        SDL_RenderPresent(_render);
 }
 
 
