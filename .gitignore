@@ -1,2 +1,4 @@
 SDL/
 TEMP/
+build/program
+src/*.o
