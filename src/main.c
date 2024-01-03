@@ -1,52 +1,25 @@
-#include <unistd.h>
-#include <stdint.h>
-#include<time.h>
-#include<stdio.h>
-#include "../SDL/include/SDL2/SDL.h"
-#include<time.h>
-#include<stdbool.h>
-#include<stdlib.h>
-//#include<SDL2/SDL_image.h>
-//#include<SDL2/SDL_ttf.h>
-// static Uint32 momentum=0 ;
-static Uint32 window_Height =0;
-static Uint32 window_Width= 0;
-static int velocity=0;
-static Sint32 cord_x=0;
-// static Sint32 velocity=0;
-// static Uint32 friction=i-10;
-// static Uint32 cord_y;
-static Sint32 _lasttick;
+#include "../include/main.h"
+#include "../include/_ball.h"
+Ball _ball;
 const Uint8 *state;
-//Ball 
-typedef  struct{
-   Uint32 ball_x;
-   Uint32 ball_y;    
-}ball;
-ball _ball;
-
-
-#define FPS 90
 SDL_Renderer *_render ;
-void renderer(SDL_Window *win);
 SDL_FRect  _playable;
 
 
 void update_playable(void){
 _playable.h=(float)window_Height*0.03;
 _playable.w=(float)window_Width *0.11;
-if (cord_x<5) cord_x=1;
-if (cord_x>window_Width-_playable.w-5) cord_x=window_Width-_playable.w;
+if (cord_x<0) cord_x=1;
+if (cord_x+_playable.w>window_Width) cord_x=window_Width-_playable.w;
 _playable.x=(float)cord_x;   // only this changes on movable..
 _playable.y=(float)window_Height*0.9;
+printf("CORD X AND CORD Y %d and %d    %d  %d \n",cord_x,cord_x,window_Height,window_Width);
 }
 
 
 void _eventcheck(SDL_Window *win){
     (void )win;
        update_playable();
-       _ball.ball_x=10;
-       _ball.ball_y=10;
        SDL_SetRenderDrawColor(_render, 0,0,0,255) ;
        SDL_RenderClear(_render);
     //    SDL_SetRenderDrawColor(_render, 255,0,0,255) ;
@@ -61,8 +34,7 @@ void renderer(SDL_Window* win){
     SDL_Init(SDL_INIT_VIDEO);
     SDL_Event event;
     bool  run=true;
-    static float friction=0.99;
-    char Prev_key='\0';
+    static float friction=0.9;
     while(run){
        _lasttick=SDL_GetTicks();
         _eventcheck(win);
@@ -81,15 +53,16 @@ void renderer(SDL_Window* win){
                 }
             }
             }
-            printf("states : %d \n",state[SDL_SCANCODE_1]);
 
             if(state[SDL_SCANCODE_LEFT]){
-                velocity-=_playable.w/60;
+                velocity-=_playable.w/80;
                 }
             if (state[SDL_SCANCODE_RIGHT]){
-                velocity+=_playable.w/60;
+                velocity+=_playable.w/80;
+                // printf("states  RIGHT : %d \n",state[SDL_SCANCODE_RIGHT]);
             }
         velocity*=friction; // Change in velocity 
+        printf("VELOCITY %f \n ",velocity);
         cord_x+=velocity; 
         Sint32 computed=_lasttick+1000/FPS-SDL_GetTicks();
         if (computed>0){
