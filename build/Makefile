@@ -1,7 +1,7 @@
-CC = clang
+CC = gcc
 CFLAGS := `sdl2-config --libs --cflags` -ggdb3 -O0 --std=c99 -Wall -lm -Wall -Wextra -pedantic
 DIRS = ../src
-SRCS = $(DIRS)/main.c
+SRCS = $(wildcard $(DIRS)/*.c)
 OBJS = $(SRCS:.c=.o)
 EXEC =  program.out
 HDRS = # Add your header files here

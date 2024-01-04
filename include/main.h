@@ -21,6 +21,11 @@ static Sint32 cord_x=0;
 // static Uint32 cord_y;
 void renderer(SDL_Window *win);
 static Sint32 _lasttick;
-#define FPS 90
+#define FPS 200
 
+static double Bx=100;
+static double By=100;
+static double Br=5;
+// static double Theta=60;
 
+int main(void);

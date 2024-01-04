@@ -2,3 +2,4 @@ SDL/
 TEMP/
 build/*.out
 src/*.o
+src/main.o
