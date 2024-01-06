@@ -15,7 +15,7 @@
 static Uint32 window_Height =0;
 static Uint32 window_Width= 0;
 static double velocity=0;
-static Sint32 cord_x=0;
+static float cord_x=0;
 // static Sint32 velocity=0;
 // static Uint32 friction=i-10;
 // static Uint32 cord_y;
