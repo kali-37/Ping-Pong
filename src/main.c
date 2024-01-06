@@ -1,6 +1,8 @@
 #include "../include/main.h"
 #include "../include/_ball.h"
 #include <SDL2/SDL_render.h>
+
+
 Ball *_ball;
 SDL_FRect _playable; // Add this line to declare the _playable variable
 const Uint8 *state;
@@ -36,9 +38,19 @@ void ball_direction(Ball *_ball){
     // _ball->vy*=-1;
    }
 
+void kill_SDL(SDL_Window *win){
+            free(_ball);
+            SDL_DestroyWindow(win);
+            printf("DESTORYED SUCESS");
+            SDL_Quit();
+            printf("DESTORYED SUCESS 2");
+
+}
+
+
 void update_playable(void){
 _playable.h=(float)window_Height*0.03;
-_playable.w=(float)window_Width *0.11;
+_playable.w=(float)window_Width *0.19;
 // _playable.h=(float)window_Height*0.53;
 // _playable.w=(float)window_Width *0.61;
 if (cord_x<0) cord_x=1;
@@ -80,7 +92,7 @@ void renderer(SDL_Window* win){
     SDL_Init(SDL_INIT_VIDEO);
     SDL_Event event;
     bool  run=true;
-    static float friction=0.97;
+    static float friction=0.87;
     while(run){
        _lasttick=SDL_GetTicks();
         _eventcheck(win);
@@ -99,19 +111,20 @@ void renderer(SDL_Window* win){
                 }
             }
             }
+            if( state[SDL_SCANCODE_P]){
+                SDL_Delay(3000) ;               
+                }                
+
+             
 
             if(state[SDL_SCANCODE_LEFT]){
-                velocity-=_playable.w/150;
+                velocity-=_playable.w/90;
                 }
             if (state[SDL_SCANCODE_RIGHT]){
-                velocity+=_playable.w/150;
+                velocity+=_playable.w/90;
             }
             if (state[SDL_SCANCODE_R]){
-            free(_ball);
-            SDL_DestroyWindow(win);
-            printf("DESTORYED SUCESS");
-            SDL_Quit();
-            printf("DESTORYED SUCESS 2");
+            kill_SDL(win);
             main();
             }
         velocity*=friction; // Change in velocity 
@@ -124,19 +137,14 @@ void renderer(SDL_Window* win){
         SDL_Delay(computed);
         }
     }
-    free(_ball);
-
-    SDL_DestroyWindow(win);
-    printf("DESTORYED SUCESS");
-    SDL_Quit();
-    printf("DESTORYED SUCESS 2");
+    kill_SDL(win);
     exit(0);
 }
 
 int main(void){
     _ball =malloc(sizeof(Ball)) ;
-    _ball->vx=5;
-    _ball->vy=5;
+    _ball->vx=2;
+    _ball->vy=2;
     _ball->x=Bx;
     _ball->y=By;
     _ball->radius=Br; 
@@ -152,4 +160,14 @@ int main(void){
     _render=SDL_CreateRenderer(_window,0, SDL_RENDERER_ACCELERATED);
     renderer(_window);             
     return 0;
+}
+
+
+
+
+Uint32 get_window_Height(void){
+    return window_Height;
+}
+Uint32 get_window_Width(void){
+    return window_Width;
 }

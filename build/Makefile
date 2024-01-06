@@ -1,5 +1,6 @@
 CC = clang
-CFLAGS := `sdl2-config --libs --cflags` -ggdb3 -O0 --std=c99 -Wall -lm -Wall -Wextra -pedantic
+CFLAGS = $(shell sdl2-cofig --cflags) -ggdb3 -O0 --std=c99 -Wall -Wall -Wextra -pedantic
+LDFLAGS := $(shell sdl2-config --libs) -lm
 DIRS = ../src
 SRCS = $(wildcard $(DIRS)/*.c)
 OBJS = $(SRCS:.c=.o)
@@ -13,7 +14,7 @@ clean:
 	@echo "clean executed Success"
 
 $(EXEC): $(OBJS) $(HDRS)
-	@$(CC) -o $@ $(OBJS) $(CFLAGS)
+	@$(CC) -o $@ $(OBJS) $(CFLAGS) $(LDFLAGS)
 
 
 
