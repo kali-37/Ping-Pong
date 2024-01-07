@@ -33,11 +33,13 @@ void ball_direction(Ball *_ball){
     while(count1<_size_file){
         Uint32 count2=0;
         while(count2<_size_lines){
-            // printf("Point: (%f, %f)\n", point.x, point.y);
-        //    printf("Rect: (%f, %ld, %f, %f)\n", Block[count1][count2]->block.x, Block[count1][count2]->y, Block[count1][count2]->block.w, Block[count1][count2]->block.h);
+          //   printf("Point: (%f, %f)\n", point.x, point.y);
+           //printf("Rect: (%f, %ld, %f, %f)\n", Block[count1][count2]->block.x, Block[count1][count2]->y, Block[count1][count2]->block.w, Block[count1][count2]->block.h);
+            if (Block[count1][count2]!=NULL){
             if (SDL_PointInFRect(&point,&Block[count1][count2]->block) && Block[count1][count2]->Block){
             // printf("The point is inside the rectangle. >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>\n");
             // if ()
+            }
              _ball->vy*=-1; ;
             //  _ball->y+=_ball->radius;
             Break=true;
@@ -67,14 +69,14 @@ void kill_SDL(SDL_Window *win){
 
 
 void update_playable(void){
-if (_size_file!=UINT32_MAX){
-_playable.h=Block[0][0]->h;
-_playable.w=Block[0][0]->w*3;
-}
-else{
+// if (_size_file!=UINT32_MAX && (Block[0][0]!=NULL)){
+// _playable.h=Block[0][0]->h;
+// _playable.w=Block[0][0]->w*3;
+// }
+// else{
 _playable.h=(float)window_Height*0.03;
 _playable.w=(float)window_Width *0.19;
-}
+// }
 
 if (cord_x<0) cord_x=1;
 if (cord_x+_playable.w>window_Width) cord_x=window_Width-_playable.w;
@@ -84,7 +86,7 @@ printf("CORD X AND CORD Y %f and %f    %d  %d \n",cord_x,cord_x,window_Height,wi
 }
 
 SDL_Color get_pixel_color(SDL_Surface* surface, int x, int y){
-        SDL_Color color = {0, 0, 0, 0};
+    SDL_Color color = {0, 0, 0, 0};
     Uint32 *pixels = (Uint32 *)surface->pixels;
     Uint32 pixel = pixels[(y * surface->w) + x];
 
@@ -94,10 +96,10 @@ SDL_Color get_pixel_color(SDL_Surface* surface, int x, int y){
 
   return color;  
 }
-void _eventcheck(SDL_Window *win){
+void _eventcheck(void ){
     printf("STARTED   1 \n");
-    (void )win;
        ball_direction(_ball);
+       printf("Started 000");
        update_playable();
        SDL_SetRenderDrawColor(_render, 0,0,0,255) ;
        SDL_RenderClear(_render);
@@ -105,7 +107,7 @@ void _eventcheck(SDL_Window *win){
        SDL_RenderFillRectF(_render,&_playable);
        SDL_SetRenderDrawColor(_render, 255,0,0,255) ;
        DrawCircle(_render, _ball);
-        SDL_SetRenderDrawColor(_render, 92,52,20,255) ;
+        SDL_SetRenderDrawColor(_render, 25,255,30,255) ;
        block_design(_render);
        SDL_RenderPresent(_render);
 }
@@ -116,7 +118,7 @@ void renderer(SDL_Window* win){
     bool  run=true;
     static float friction=0.87;
     while(run){
-       _lasttick=SDL_GetTicks(); _eventcheck(win);
+       _lasttick=SDL_GetTicks(); _eventcheck();
         SDL_RenderPresent(_render);
         while(SDL_PollEvent(&event)){
             if(event.type==SDL_QUIT){
@@ -148,10 +150,7 @@ void renderer(SDL_Window* win){
             main();
             }
         velocity*=friction; // Change in velocity 
-        printf("VELOCITY %f , cord _X %f\n ",velocity,cord_x);
-        float temp=cord_x;
         cord_x=cord_x+velocity;
-        printf("VELOCITY+cord_x %f , cord _X %f\n ",temp+velocity,cord_x);
         Sint32 computed=_lasttick+1000/FPS-SDL_GetTicks();
         if (computed>0){
         SDL_Delay(computed);
@@ -178,6 +177,7 @@ int main(void){
     state = SDL_GetKeyboardState(NULL);
     SDL_Window *_window=SDL_CreateWindow("GAME" ,SDL_WINDOWPOS_CENTERED,SDL_WINDOWPOS_CENTERED,dm.w*0.8,dm.h*0.8,SDL_WINDOW_RESIZABLE |SDL_WINDOW_OPENGL | SDL_WINDOW_SHOWN );
     _render=SDL_CreateRenderer(_window,0, SDL_RENDERER_ACCELERATED);
+    initallize_block_first();
     renderer(_window);             
     return 0;
 }

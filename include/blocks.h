@@ -8,6 +8,7 @@
 #include<stdlib.h>
 #include<stdint.h>
 
+void initallize_block_first(void);
 void block_design(SDL_Renderer*);
 void DrawBlocks(SDL_Renderer*,int,int);
 extern Uint32 get_window_Height(void); // As they are static we had to do this to get values 
@@ -24,6 +25,8 @@ typedef struct{
     SDL_FRect block;
 }block_size ;
 
+extern int count ;
+extern char *_file_array[255];
 
 extern block_size *Block[255][255];
 
