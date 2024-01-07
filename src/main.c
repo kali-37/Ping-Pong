@@ -1,41 +1,59 @@
 #include "../include/main.h"
 #include "../include/_ball.h"
+#include <SDL2/SDL_events.h>
+#include <SDL2/SDL_rect.h>
 #include <SDL2/SDL_render.h>
+#include <stdint.h>
 
 
+
+SDL_FRect _playable; 
 Ball *_ball;
-SDL_FRect _playable; // Add this line to declare the _playable variable
 const Uint8 *state;
 SDL_Renderer *_render ;
-
 void ball_direction(Ball *_ball){
-    _ball->radius=_playable.w/13;
+    _ball->radius=_playable.w/15;
     _ball->x+=_ball->vx;
-//     printf("%f ball x  \n",_ball->x);
     _ball->y+=_ball->vy;
     if (_ball->x<=0 || _ball->x+_ball->radius*2 >=window_Width) _ball->vx*=-1 ;
     if (_ball->y<=0  ) _ball->vy*=-1; 
 
-//     float _pre_x=_playable.w/3; //pre alert ball data ..
-//     float _pre_y=_playable.h/3;
 
-//    if (((_ball->x+_ball->radius)>=_playable.x-_pre_x && (_ball->x+_ball->radius)<=+_playable.x+_playable.w+_pre_x) && ((_ball->y+_ball->radius )>=_playable.y-_pre_y && (_ball->y+_ball->radius)<=_playable.y+_playable.h)){
-    
-
-    //    SDL_Surface *surface = SDL_GetWindowSurface(win);
-
-
-    SDL_FPoint point = {_ball->x,_ball->y}; // Define your point
+    SDL_FPoint point;
+    point.x=_ball->x;
+    point.y=_ball->y; // Define your point
+                      
     if (SDL_PointInFRect(&point,&_playable)){
-    printf("The point is inside the rectangle.\n");
         _ball->vy*=-1;
         _ball->y-=_ball->radius*3;
-    } else {
-        printf("The point is not inside the rectangle.\n");
     }
-
-
-    // _ball->vy*=-1;
+    bool Break=false;
+    if (_size_file!=UINT32_MAX){
+    Uint32 count1=0;
+    while(count1<_size_file){
+        Uint32 count2=0;
+        while(count2<_size_lines){
+            // printf("Point: (%f, %f)\n", point.x, point.y);
+        //    printf("Rect: (%f, %ld, %f, %f)\n", Block[count1][count2]->block.x, Block[count1][count2]->y, Block[count1][count2]->block.w, Block[count1][count2]->block.h);
+            if (SDL_PointInFRect(&point,&Block[count1][count2]->block) && Block[count1][count2]->Block){
+            // printf("The point is inside the rectangle. >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>\n");
+            // if ()
+             _ball->vy*=-1; ;
+            //  _ball->y+=_ball->radius;
+            Break=true;
+             break;
+              } 
+            else {
+                printf("The point is not inside the rectangle.\n"); 
+        }
+        count2++;
+    }
+    if (Break){
+        break;
+    }
+    count1++;
+}
+    }
    }
 
 void kill_SDL(SDL_Window *win){
@@ -49,10 +67,15 @@ void kill_SDL(SDL_Window *win){
 
 
 void update_playable(void){
+if (_size_file!=UINT32_MAX){
+_playable.h=Block[0][0]->h;
+_playable.w=Block[0][0]->w*3;
+}
+else{
 _playable.h=(float)window_Height*0.03;
 _playable.w=(float)window_Width *0.19;
-// _playable.h=(float)window_Height*0.53;
-// _playable.w=(float)window_Width *0.61;
+}
+
 if (cord_x<0) cord_x=1;
 if (cord_x+_playable.w>window_Width) cord_x=window_Width-_playable.w;
 _playable.x=cord_x;   // only this changes on movable..
@@ -75,8 +98,6 @@ void _eventcheck(SDL_Window *win){
     printf("STARTED   1 \n");
     (void )win;
        ball_direction(_ball);
-    //    _ball->radius=0.05*window_Height*window_Width;
-    //    printf("%f %f",_ball->x,_ball->y);
        update_playable();
        SDL_SetRenderDrawColor(_render, 0,0,0,255) ;
        SDL_RenderClear(_render);
@@ -84,18 +105,18 @@ void _eventcheck(SDL_Window *win){
        SDL_RenderFillRectF(_render,&_playable);
        SDL_SetRenderDrawColor(_render, 255,0,0,255) ;
        DrawCircle(_render, _ball);
+        SDL_SetRenderDrawColor(_render, 92,52,20,255) ;
+       block_design(_render);
        SDL_RenderPresent(_render);
 }
 
 void renderer(SDL_Window* win){
-    printf("STARTED___ \n");
     SDL_Init(SDL_INIT_VIDEO);
     SDL_Event event;
     bool  run=true;
     static float friction=0.87;
     while(run){
-       _lasttick=SDL_GetTicks();
-        _eventcheck(win);
+       _lasttick=SDL_GetTicks(); _eventcheck(win);
         SDL_RenderPresent(_render);
         while(SDL_PollEvent(&event)){
             if(event.type==SDL_QUIT){
@@ -115,8 +136,7 @@ void renderer(SDL_Window* win){
                 SDL_Delay(3000) ;               
                 }                
 
-             
-
+            
             if(state[SDL_SCANCODE_LEFT]){
                 velocity-=_playable.w/90;
                 }
@@ -143,8 +163,8 @@ void renderer(SDL_Window* win){
 
 int main(void){
     _ball =malloc(sizeof(Ball)) ;
-    _ball->vx=2;
-    _ball->vy=2;
+    _ball->vx=3;
+    _ball->vy=3;
     _ball->x=Bx;
     _ball->y=By;
     _ball->radius=Br; 
@@ -171,3 +191,18 @@ Uint32 get_window_Height(void){
 Uint32 get_window_Width(void){
     return window_Width;
 }
+
+
+
+/* 
+Direction Tree 
+
+!  mathi batw tala -vy 
+
+.
+| talabatw mathi   -vy 
+ 
+
+
+
+*/

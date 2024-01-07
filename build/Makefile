@@ -1,11 +1,12 @@
 CC = clang
-CFLAGS = $(shell sdl2-cofig --cflags) -ggdb3 -O0 --std=c99 -Wall -Wall -Wextra -pedantic
-LDFLAGS := $(shell sdl2-config --libs) -lm
-DIRS = ../src
-SRCS = $(wildcard $(DIRS)/*.c)
+CFLAGS = `sdl2-config --cflags` -ggdb3 -O3 --std=c99 -Wall -Wall -Wextra -pedantic
+LDFLAGS := `sdl2-config --libs` -lm
+DIRS_src = ../src
+DIRS_headers = ../headers
+SRCS = $(wildcard $(DIRS_src)/*.c)
 OBJS = $(SRCS:.c=.o)
 EXEC =  program.out
-HDRS = # Add your header files here
+HDRS = $(wildcard $(DIRS_headers)/*.h) 
 
 all: $(EXEC)
 
