@@ -1,5 +1,8 @@
 clean executed Success
-clang `sdl2-config --cflags` -ggdb3 -O3 --std=c99 -Wall -Wall -Wextra -pedantic   -c -o ../src/ball.o ../src/ball.c
-clang `sdl2-config --cflags` -ggdb3 -O3 --std=c99 -Wall -Wall -Wextra -pedantic   -c -o ../src/blocks.o ../src/blocks.c
-clang `sdl2-config --cflags` -ggdb3 -O3 --std=c99 -Wall -Wall -Wextra -pedantic   -c -o ../src/main.o ../src/main.c
+clang `sdl2-config --cflags` -ggdb3 -O3 --std=c99 -Wall -Wall -Wextra -pedantic    -c -o ../src/ball.o ../src/ball.c
+clang `sdl2-config --cflags` -ggdb3 -O3 --std=c99 -Wall -Wall -Wextra -pedantic    -c -o ../src/blocks.o ../src/blocks.c
+clang `sdl2-config --cflags` -ggdb3 -O3 --std=c99 -Wall -Wall -Wextra -pedantic    -c -o ../src/main.o ../src/main.c
 ./program.out
+STARTED0 
+
+FILE >>> 29 , count >> 17 

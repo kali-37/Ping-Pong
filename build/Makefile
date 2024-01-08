@@ -1,5 +1,6 @@
 CC = clang
-CFLAGS = `sdl2-config --cflags` -ggdb3 -O3 --std=c99 -Wall -Wall -Wextra -pedantic
+CFLAGS = `sdl2-config --cflags` -ggdb3 -O3 --std=c99 -Wall -Wall -Wextra -pedantic 
+#-fsanitize=address
 LDFLAGS := `sdl2-config --libs` -lm
 DIRS_src = ../src
 DIRS_headers = ../headers
@@ -16,8 +17,6 @@ clean:
 
 $(EXEC): $(OBJS) $(HDRS)
 	@$(CC) -o $@ $(OBJS) $(CFLAGS) $(LDFLAGS)
-
-
 
 
 run: clean all
