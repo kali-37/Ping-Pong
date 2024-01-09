@@ -1,5 +1,4 @@
 #include "../include/_ball.h"
-#include<math.h>
 // Ball _ball;
 void DrawCircle(SDL_Renderer * _render,Ball *_ball)
 {

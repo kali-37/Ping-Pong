@@ -1,7 +1,7 @@
 CC = clang
 CFLAGS = `sdl2-config --cflags` -ggdb3 -O3 --std=c99 -Wall -Wall -Wextra -pedantic 
 #-fsanitize=address
-LDFLAGS := `sdl2-config --libs` -lm
+LDFLAGS := `sdl2-config --libs` -lm -lSDL2_mixer
 DIRS_src = ../src
 DIRS_headers = ../headers
 SRCS = $(wildcard $(DIRS_src)/*.c)

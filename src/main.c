@@ -1,12 +1,22 @@
 #include "../include/main.h"
-#include "../include/_ball.h"
-#include <SDL2/SDL_events.h>
-#include <SDL2/SDL_rect.h>
-#include <SDL2/SDL_render.h>
-#include <stdint.h>
-#include <stdio.h>
-#include <stdlib.h>
+#include <SDL2/SDL_mixer.h>
+#include <time.h>
+
 #define M_PI3 3.1415
+Mix_Chunk *sound;
+void _play_sound(char character){
+    printf("\n SOUND INVOKED WITH COMMAND : %c\n",character);
+    if (character == 'B') sound = Mix_LoadWAV("../boxer.wav");
+    else   sound= Mix_LoadWAV("../pop.wav");
+        if (sound== NULL){
+            printf("Failed to load sound! SDL_mixer Error: %s\n", Mix_GetError());
+            return;
+        }
+        if (Mix_PlayChannel(-1,sound, 0) == -1){
+            printf("Failed to play sound! SDL_mixer Error: %s\n", Mix_GetError());
+        }
+        sound= NULL;
+    }
 
 SDL_FRect _playable; 
 Ball *_ball;
@@ -27,15 +37,11 @@ void ball_direction(Ball *_ball){
     point[2].y=_ball->y;
     point[3].x=_ball->x;
     point[3].y=_ball->y-_ball->radius; 
-
-    Uint32 _half_loc_playable=_playable.x+_playable.w/2;
-
-                      
     if (SDL_PointInFRect(&point[0],&_playable) || SDL_PointInFRect(&point[1],&_playable) || SDL_PointInFRect(&point[2],&_playable) || SDL_PointInFRect(&point[3],&_playable)){
+       _play_sound('B'); 
         _ball->vy*=-1;
         _ball->y-=_ball->radius*3;
     }
-
     bool Break=false;
     if (_size_file!=UINT32_MAX && Block[0][0]!=NULL){
         
@@ -47,7 +53,7 @@ void ball_direction(Ball *_ball){
             if (SDL_PointInFRect(&point[0],&Block[count1][count2]->block)||SDL_PointInFRect(&point[1],&Block[count1][count2]->block)||SDL_PointInFRect(&point[2],&Block[count1][count2]->block)||SDL_PointInFRect(&point[3],&Block[count1][count2]->block)) {
             
             if( _file_array[count1][count2]=='*'){
-                
+               _play_sound('E'); 
                 _ball->vy*=-1;
              if (_ball->vy>0) _ball->y+=_ball->radius*2;
              else _ball->y-=_ball->radius*2;
@@ -83,14 +89,14 @@ void ball_direction(Ball *_ball){
 void kill_SDL(SDL_Window *win){
             free(_ball);
             SDL_DestroyWindow(win);
-            // printf("DESTORYED SUCESS");
+            Mix_FreeChunk(sound);
             SDL_Quit();
-            // printf("DESTORYED SUCESS 2");
 
 }
 
 
 void update_playable(void){
+
 if (Block[0][0]!=NULL){
 _playable.h=Block[0][0]->h*0.8;
 _playable.w=Block[0][0]->w*6;
@@ -120,10 +126,8 @@ SDL_Color get_pixel_color(SDL_Surface* surface, int x, int y){
   return color;  
 }
 void _eventcheck(SDL_Window *win){
-    // printf("STARTED   1 \n");
     (void )win;
        ball_direction(_ball);
-    //    printf("BALL DOWN");
        update_playable();
        SDL_SetRenderDrawColor(_render, 0,0,0,255) ;
        SDL_RenderClear(_render);
@@ -131,10 +135,7 @@ void _eventcheck(SDL_Window *win){
        SDL_RenderFillRectF(_render,&_playable);
        SDL_SetRenderDrawColor(_render, 255,0,0,255) ;
        DrawCircle(_render, _ball);
-    //    SDL_SetRenderDrawColor(_render, 92,52,20,255) ;
-    //    printf("before desing DOWN");
        block_design(_render);
-    //    printf("after desing DOWN");
        SDL_RenderPresent(_render);
 }
 
@@ -172,15 +173,18 @@ void renderer(SDL_Window* win){
                 velocity+=_playable.w/90;
             }
             if (state[SDL_SCANCODE_R]){
-            kill_SDL(win);
-            printf("KILLED");
-            main();
+            // kill_SDL(win);
+            // printf("\nKILLED\n");
+            // main();
+            // 
+            srand(time(NULL));
+            float _RAND = 4*(rand()/(float)RAND_MAX);
+            printf("LOGGED : _RAND %d",_RAND);
+            _ball->x=_playable.x +_playable.w/_RAND;
+            _ball->y=_playable.y;
             }
         velocity*=friction; // Change in velocity 
-        // printf("VELOCITY %f , cord _X %f\n ",velocity,cord_x);
-        float temp=cord_x;
         cord_x=cord_x+velocity;
-        // printf("VELOCITY+cord_x %f , cord _X %f\n ",temp+velocity,cord_x);
         Sint32 computed=_lasttick+1000/FPS-SDL_GetTicks();
         if (computed>0){
         SDL_Delay(computed);
@@ -207,15 +211,18 @@ void free_all(void){
         }
         count2++;
     } 
-    //DrawBlocks(_render,_size_file,_size_lines)    ;
 
         count1++;
 }
-// printf("FREED \n");
 }
 
 
 int main(void){
+    SDL_Init(SDL_INIT_AUDIO);
+    if (Mix_OpenAudio(MIX_DEFAULT_FREQUENCY,MIX_DEFAULT_FORMAT,MIX_DEFAULT_CHANNELS,2040)<0 ){
+        printf("FAILED AUDIO");
+    }
+
     atexit(free_all);
     _ball =malloc(sizeof(Ball)) ;
     _ball->vx=1;
@@ -229,7 +236,7 @@ int main(void){
     SDL_Log("SDL_GetDesktopDisplayMode failed: %s", SDL_GetError());
     return 1;
 }
-    printf("STARTED0 \n\n");
+    printf("\nMAIN LOGGED\n\n");
     state = SDL_GetKeyboardState(NULL);
     SDL_Window *_window=SDL_CreateWindow("GAME" ,SDL_WINDOWPOS_CENTERED,SDL_WINDOWPOS_CENTERED,dm.w*0.8,dm.h*0.8,SDL_WINDOW_RESIZABLE |SDL_WINDOW_OPENGL | SDL_WINDOW_SHOWN );
     _render=SDL_CreateRenderer(_window,0, SDL_RENDERER_ACCELERATED);

@@ -1,6 +1,6 @@
 #include <stdint.h>
 #include <SDL2/SDL.h>
-
+#include <math.h>
 typedef struct{
     double  x;
     double  y;

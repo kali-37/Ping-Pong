@@ -1,9 +1,4 @@
 #include"../include/blocks.h"
-#include <SDL2/SDL_rect.h>
-#include <SDL2/SDL_render.h>
-#include <SDL2/SDL_stdinc.h>
-#include <stdint.h>
-#include <stdio.h>
 
 block_size* Block[255][255]={0};
 
@@ -26,18 +21,15 @@ void initallize_level(void){
         strcpy(_file_array[count], buffer);
         count++;
     }
-    printf("FILE >>> %lu , count >> %d ",strlen(_file_array[1] )-1  ,count) ;
+    // printf("FILE >>> %lu , count >> %d ",strlen(_file_array[1] )-1  ,count) ;
     _size_file=count; // 7 
     _size_lines=strlen(_file_array[1])-1;  // Deduce \n  , aroudnd 36 
 }
-
 
 void block_design(SDL_Renderer* _render){
     Uint32 window_Height=get_window_Height();
     Uint32 window_Width=get_window_Width();
     float height_of_block=((float)window_Height/3)/_size_file; // We will make our stuffs within window_Height/3 
-    // printf(" window height : %d \n count : %d THUS height_of_blockk is %d\n",window_Height,_size_file,height_of_block);
-    // SDL_Delay(5000);
     float width_of_block=(float)window_Width/_size_lines;
     Uint32 count1=0;
    while(count1<_size_file){
@@ -48,7 +40,6 @@ void block_design(SDL_Renderer* _render){
         //    printf("Memory allocation failed\n");
            exit(1);
        }
-        // printf("\nSO 000 FILE ARRAY");
         if (_file_array[count1][count2]!='*'){
         Block[count1][count2]->x=Block[count1][count2]->block.x=count2*width_of_block;
         Block[count1][count2]->y=Block[count1][count2]->block.y=count1*height_of_block;
@@ -82,7 +73,6 @@ void block_design(SDL_Renderer* _render){
        }
        count1++;
     } 
-    //DrawBlocks(_render,_size_file,_size_lines)    ;
 
 } 
 
